@@ -1,9 +1,12 @@
 import { useState } from "react"
 import "./form.css"
+import { useAuth } from "../../contexts/AuthContext"
 
 function LoginForm(){
     const [email,setEmail]=useState('')
     const [password,setPassword]=useState('')
+
+    const {login}=useAuth()
 
     const handleLogin=async(e:React.FormEvent)=>{
         e.preventDefault()
@@ -24,7 +27,8 @@ function LoginForm(){
             if (!data.success){
                 alert("login failed:"+data.error)
             }else{
-                alert("login success:"+data.userId)
+                login(data.token,data.user)
+                alert("login success:"+data.user.userId)
             }
         }catch(err){
             alert("login failed:"+err)

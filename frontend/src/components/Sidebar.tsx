@@ -1,14 +1,25 @@
 import { Link } from "react-router-dom"
 import './Sidebar.css'
+import { useAuth } from "../contexts/AuthContext"
 
 function Sidebar(){
+    const {isAuthenticated,logout}=useAuth()
     return(
         <nav className="Sidebar">
                 <Link to="/">首页</Link>
-                <Link to="/register">注册</Link>
-                <Link to="/Login">登录</Link>
-                <Link to="/DashBoard">用户仪表盘</Link>
-                <button>Logout</button>
+                {isAuthenticated?(
+                    <>
+                        <Link to="/DashBoard">用户仪表盘</Link>
+                        <button onClick={logout}>Logout</button>
+                    </>              
+                )
+                :(
+                    <>
+                        <Link to="/register">注册</Link>
+                        <Link to="/Login">登录</Link>
+                    </>
+                )
+                }
         </nav>
     )
 }

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"log"
+	"picturemanager/db"
 	"picturemanager/handlers"
+	"picturemanager/models"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -9,6 +12,11 @@ import (
 )
 
 func main() {
+	db.InitDB()
+	if err := db.DB.AutoMigrate(&models.User{}); err != nil {
+		log.Fatalf("[main]failed to automigrate User model")
+	}
+
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
@@ -19,6 +27,7 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	r.GET("/verify-token", handlers.VerifyToken)
 	r.POST("/register", handlers.Register)
 	r.POST("/login", handlers.Login)
 

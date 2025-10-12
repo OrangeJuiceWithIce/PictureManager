@@ -1,10 +1,13 @@
 import { useState } from "react"
 import './form.css'
+import { useAuth } from "../../contexts/AuthContext"
 
 function RegisterForm(){
     const [email,setEmail]=useState('')
     const [username,setUsername]=useState('') 
     const [password,setPassword]=useState('')
+
+    const {login}=useAuth()
 
     const handleRegister=async(e:React.FormEvent)=>{
         e.preventDefault()
@@ -23,12 +26,13 @@ function RegisterForm(){
             })
             const data=await res.json()
             if (!data.success){
-                alert("login failed:"+data.error)
+                alert("register failed:"+data.error)
             }else{
-                alert("login success:"+data.userId)
+                login(data.token,data.user)
+                alert("register success:"+data.user.userId)
             }
         }catch(err){
-            alert("login failed:"+err)
+            alert("register failed:"+err)
         }
     }
 
