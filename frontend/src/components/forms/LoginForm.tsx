@@ -1,0 +1,59 @@
+import { useState } from "react"
+import "./form.css"
+
+function LoginForm(){
+    const [email,setEmail]=useState('')
+    const [password,setPassword]=useState('')
+
+    const handleLogin=async(e:React.FormEvent)=>{
+        e.preventDefault()
+
+        try{
+            const res=await fetch("http://localhost:8080/login",{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body:JSON.stringify({
+                    email,
+                    password,
+                }),
+            })
+
+            const data=await res.json()
+            if (!data.success){
+                alert("login failed:"+data.error)
+            }else{
+                alert("login success:"+data.userId)
+            }
+        }catch(err){
+            alert("login failed:"+err)
+        }
+    }
+
+    return (
+        <form onSubmit={handleLogin}>
+            <input
+                name="email"
+                type="email"
+                placeholder="email"
+                value={email}
+                onChange={(event)=>setEmail(event.target.value)}
+                required
+            />
+            <input 
+                name="password"
+                type="password"
+                placeholder="password"
+                value={password}
+                onChange={(event)=>setPassword(event.target.value)}
+                required
+            />
+            <button type="submit">
+                Login
+            </button>
+        </form>
+    )
+}
+
+export default LoginForm
