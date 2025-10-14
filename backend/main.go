@@ -23,6 +23,10 @@ func main() {
 	//需要检验token的auth接口
 	auth := r.Group("/")
 	auth.Use(middlewares.AuthMiddleware())
-	auth.POST("/upload", handlers.UploadPicture)
-	r.Run()
+	auth.POST("/uploadpict", handlers.UploadPicture)
+	auth.GET("/getpict", handlers.GetPicture)
+	auth.DELETE("/deletepict/:id", handlers.DeletePicture)
+
+	r.Static("/uploads", "./uploads")
+	r.Run("0.0.0.0:8080")
 }

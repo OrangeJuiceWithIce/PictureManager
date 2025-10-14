@@ -12,7 +12,7 @@ function LoginForm(){
         e.preventDefault()
 
         try{
-            const res=await fetch("http://localhost:8080/login",{
+            const res=await fetch("http://10.162.139.102:8080/login",{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json',

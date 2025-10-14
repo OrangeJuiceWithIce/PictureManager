@@ -2,7 +2,7 @@ import type { User } from "../types/user";
 
 export const verifyToken=async(token:string):Promise<{valid:boolean,user:User|null}>=>{
     try{
-        const res=await fetch("http://localhost:8080/verify-token",{
+        const res=await fetch("http://10.162.139.102:8080/verify-token",{
             method:"GET",
             headers:{
                 "Authorization":`Bearer ${token}`,
