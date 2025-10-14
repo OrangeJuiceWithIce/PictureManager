@@ -47,3 +47,16 @@ func ValidateToken(tokenString string) (*Claims, error) {
 	}
 	return nil, errors.New("invalid token")
 }
+
+// 为了auth中间件和verify-token接口能复用逻辑，中间额外加了这一层
+func VerifyToken(authHeader string) (*Claims, error) {
+	if authHeader == "" || len(authHeader) < 7 || authHeader[:7] != "Bearer " {
+		return nil, errors.New("Invalid auth header")
+	}
+	tokenString := authHeader[7:]
+	claims, err := ValidateToken(tokenString)
+	if err != nil {
+		return nil, errors.New("Invalid tokenString")
+	}
+	return claims, nil
+}

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type{ User } from "../types/user";
-import { verifyToken } from "../utils/auth";
+import { verifyToken } from "../utils/Auth";
 
 interface AuthContextType{
     user:User|null,

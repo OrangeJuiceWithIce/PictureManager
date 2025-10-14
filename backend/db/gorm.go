@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"picturemanager/models"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -32,6 +33,11 @@ func InitDB() {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("[InitDB]failed to connect db:%v", err)
+	}
+
+	//自动迁移数据模型
+	if err := DB.AutoMigrate(&models.User{}, &models.Picture{}); err != nil {
+		log.Fatalf("[main]failed to automigrate models")
 	}
 
 	sqlDB, _ := DB.DB()

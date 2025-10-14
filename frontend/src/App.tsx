@@ -8,6 +8,7 @@ import Dashboard from './pages/DashBoard'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './utils/ProtectedRoute'
 import AuthRoute from './utils/AuthRoute'
+import Upload from './pages/PictureManagePage/Upload'
 
 function App() {
   return (
@@ -33,6 +34,12 @@ function App() {
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }></Route>
+
+          <Route path='/upload' element={
+            <ProtectedRoute>
+              <Upload />
             </ProtectedRoute>
           }></Route>
 

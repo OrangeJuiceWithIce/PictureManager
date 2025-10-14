@@ -8,16 +8,9 @@ import (
 
 func VerifyToken(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
-	if authHeader == "" || len(authHeader) < 7 || authHeader[:7] != "Bearer " {
-		c.JSON(401, gin.H{
-			"valid": false,
-		})
-		return
-	}
-	tokenString := authHeader[7:]
-	claims, err := utils.ValidateToken(tokenString)
+	claims, err := utils.VerifyToken(authHeader)
 	if err != nil {
-		c.JSON(401, gin.H{
+		c.JSON(400, gin.H{
 			"valid": false,
 		})
 		return
