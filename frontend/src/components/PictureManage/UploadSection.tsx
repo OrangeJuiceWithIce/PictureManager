@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { usePicture } from "../../contexts/PictureContext";
 
-function UploadPicture(){
+function UploadSection(){
     const  [selectedFiles,setSelectedFiles]=useState<FileList|null>(null)
     const fileInputRef=useRef<HTMLInputElement>(null)
 
@@ -28,7 +28,7 @@ function UploadPicture(){
         }
 
         try{
-            const res=await fetch("http://10.162.139.102:8080/uploadpict",{
+            const res=await fetch("http://localhost:8080/uploadpict",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,
@@ -67,4 +67,4 @@ function UploadPicture(){
     )
 }
 
-export default UploadPicture
+export default UploadSection

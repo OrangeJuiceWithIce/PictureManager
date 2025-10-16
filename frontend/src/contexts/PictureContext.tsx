@@ -19,7 +19,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
     const fetchPictures=async()=>{
         setLoading(true)
         try{
-            const res=await fetch(`http://10.162.139.102:8080/getpict?limit=20`,{
+            const res=await fetch(`http://localhost:8080/getpict?limit=20`,{
                 method:"GET",
                 headers:{
                     "Authorization":`Bearer ${token}`,
@@ -44,7 +44,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
         if(!confirmed)return
 
         try{
-            const res=await fetch(`http://10.162.139.102:8080/deletepict/${id}`,{
+            const res=await fetch(`http://localhost:8080/deletepict/${id}`,{
                 method:"DELETE",
                 headers:{
                     "Authorization":`Bearer ${token}`,

@@ -1,3 +1,6 @@
+import AddTagSection from "../TagManage/AddTagSection";
+import "./PictureCard.css"
+
 type PictureCardProps={
     id:number;
     path:string,
@@ -6,16 +9,17 @@ type PictureCardProps={
 
 function PictureCard({id,path,onDelete}:PictureCardProps){
     return (
-        <div key={id}>
+        <div className="PictureCard" key={id}>
             <img 
-                src={`http://10.162.139.102:8080/${path}`}
+                src={`http://localhost:8080/${path}`}
                 alt="pic"
             />
-            <button
+            <button className="deleteBtn"
                 onClick={async()=>await onDelete(id)}
             >
                 X
             </button>
+            <AddTagSection id={id}/>
         </div>
     )
 }

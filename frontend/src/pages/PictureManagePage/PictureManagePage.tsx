@@ -1,12 +1,12 @@
-import GetPicture from "../../components/PictureManage/GetPicture";
-import UploadPicture from "../../components/PictureManage/UploadPicture";
+import PictureGallery from "../../components/PictureManage/PictureGallery";
+import UploadSection from "../../components/PictureManage/UploadSection";
 import { PictureProvider } from "../../contexts/PictureContext";
 
 function PictureManagePage(){
     return(
         <PictureProvider>
-            <UploadPicture />
-            <GetPicture />
+            <UploadSection />
+            <PictureGallery />
         </PictureProvider>
     )
 }

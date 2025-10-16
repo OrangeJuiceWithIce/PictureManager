@@ -37,7 +37,7 @@ function App() {
             </ProtectedRoute>
           }></Route>
 
-          <Route path='/upload' element={
+          <Route path='/picture' element={
             <ProtectedRoute>
               <PictureManagePage />
             </ProtectedRoute>

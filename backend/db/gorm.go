@@ -36,7 +36,7 @@ func InitDB() {
 	}
 
 	//自动迁移数据模型
-	if err := DB.AutoMigrate(&models.User{}, &models.Picture{}); err != nil {
+	if err := DB.AutoMigrate(&models.User{}, &models.Picture{}, &models.Tag{}); err != nil {
 		log.Fatalf("[main]failed to automigrate models")
 	}
 

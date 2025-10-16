@@ -1,8 +1,8 @@
-import "./GetPicture.css"
+import "./PictureGallery.css"
 import PictureCard from "./PictureCard";
 import { usePicture } from "../../contexts/PictureContext";
 
-function GetPicture(){
+function PictureGallery(){
     const {pictures,loading,deletePictures}=usePicture()
 
     if(loading){
@@ -21,4 +21,4 @@ function GetPicture(){
     )
 }
 
-export default GetPicture
+export default PictureGallery

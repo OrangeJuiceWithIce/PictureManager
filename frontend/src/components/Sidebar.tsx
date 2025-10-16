@@ -10,7 +10,7 @@ function Sidebar(){
                 {isAuthenticated?(
                     <>
                         <Link to="/dashBoard">用户仪表盘</Link>
-                        <Link to="/upload">上传图片</Link>
+                        <Link to="/picture">图片</Link>
                         <button onClick={logout}>Logout</button>
                     </>              
                 )

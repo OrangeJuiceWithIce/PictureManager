@@ -1,0 +1,25 @@
+.PictureCard{
+    position: relative;
+}
+
+.PictureCard .deleteBtn{
+    position: absolute;
+    top:5%;
+    right:5%;
+}
+
+.PictureCard button{    
+    width:30px;
+    height:30px;
+
+    border:none;
+    border-radius: 50%;
+
+    background-color:transparent;
+
+    cursor:pointer;
+}
+
+.PictureCard button:hover{
+    background-color:rgba(255,255,255,0.8);
+}
