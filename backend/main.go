@@ -27,6 +27,7 @@ func main() {
 	auth.GET("/getpict", handlers.GetPicture)
 	auth.DELETE("/deletepict/:id", handlers.DeletePicture)
 	auth.POST("/addtag", handlers.AddTag)
+	auth.POST("/gettag", handlers.GetTag)
 
 	r.Static("/uploads", "./uploads")
 	r.Run("0.0.0.0:8080")

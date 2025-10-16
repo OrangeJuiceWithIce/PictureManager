@@ -44,7 +44,7 @@ func Register(c *gin.Context) {
 
 	hashedPassword, err := utils.HashPassword(formdata.Password)
 	if err != nil {
-		fmt.Printf("[Register]failed to hash password:%v", err)
+		fmt.Printf("[Register]failed to hash password:%v\n", err)
 		c.JSON(500, gin.H{"success": false, "error": "failed to hash password"})
 		return
 	}
@@ -56,7 +56,7 @@ func Register(c *gin.Context) {
 	}
 
 	if err := db.DB.Create(newuser).Error; err != nil {
-		fmt.Printf("[Register]failed to create new user:%v", err)
+		fmt.Printf("[Register]failed to create new user:%v\n", err)
 		c.JSON(500, gin.H{"success": false, "error": "failed to create new user"})
 		return
 	}
@@ -64,7 +64,7 @@ func Register(c *gin.Context) {
 	//token
 	token, err := utils.GenerateToken(strconv.Itoa(int(newuser.ID)), newuser.Email, newuser.Username)
 	if err != nil {
-		fmt.Printf("[Register]failed to generate token:%v", err)
+		fmt.Printf("[Register]failed to generate token:%v\n", err)
 		c.JSON(500, gin.H{"success": false, "error": "failed to generate token"})
 		return
 	}
@@ -96,7 +96,7 @@ func Login(c *gin.Context) {
 
 	token, err := utils.GenerateToken(strconv.Itoa(int(user.ID)), user.Email, user.Username)
 	if err != nil {
-		fmt.Printf("[Login]failed to generate token:%v", err)
+		fmt.Printf("[Login]failed to generate token:%v\n", err)
 		c.JSON(500, gin.H{"success": false, "error": "failed to generate token"})
 		return
 	}

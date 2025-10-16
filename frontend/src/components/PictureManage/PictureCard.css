@@ -1,5 +1,13 @@
 .PictureCard{
     position: relative;
+    
+    height:300px;
+}
+
+.PictureCard img{
+    width: 100%;
+    height:100%;
+    object-fit: cover;
 }
 
 .PictureCard .deleteBtn{

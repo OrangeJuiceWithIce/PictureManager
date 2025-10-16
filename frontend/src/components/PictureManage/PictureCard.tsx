@@ -1,13 +1,18 @@
+import type { Tag } from "../../types/tag";
 import AddTagSection from "../TagManage/AddTagSection";
+import TagGallery from "../TagManage/TagGallery";
 import "./PictureCard.css"
 
 type PictureCardProps={
     id:number;
     path:string,
+    tags:Tag[],
+    active:boolean,//目前用于激活tag输入框
     onDelete:(id:number)=>Promise<void>;
+    handleAddTagBtnClicked:(id:number|null)=>void;
 }
 
-function PictureCard({id,path,onDelete}:PictureCardProps){
+function PictureCard({id,path,tags,active,onDelete,handleAddTagBtnClicked}:PictureCardProps){
     return (
         <div className="PictureCard" key={id}>
             <img 
@@ -19,7 +24,8 @@ function PictureCard({id,path,onDelete}:PictureCardProps){
             >
                 X
             </button>
-            <AddTagSection id={id}/>
+            <TagGallery tags={tags}/>
+            <AddTagSection id={id} active={active} handleAddTagBtnClicked={handleAddTagBtnClicked}/>
         </div>
     )
 }

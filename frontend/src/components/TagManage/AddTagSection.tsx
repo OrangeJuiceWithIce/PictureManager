@@ -1,22 +1,21 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useAuth } from "../../contexts/AuthContext"
+import { useTag } from "../../contexts/TagContext"
 
 type AddTagBtnProps={
     id:number
+    active:boolean
+    handleAddTagBtnClicked:(id:number|null)=>void
 }
 
-function AddTagBtn({id}:AddTagBtnProps){
-    const [addTag,setAddTag]=useState(false)
+function AddTagBtn({id,active,handleAddTagBtnClicked}:AddTagBtnProps){
     const tagInputRef=useRef<HTMLInputElement>(null)
     const {token}=useAuth()
-    
-    const handleAddClick=()=>{
-        setAddTag((prev)=>(!prev))
-    }
+    const {fetchTags}=useTag()
 
     const handleSubmit=async()=>{
         if(!tagInputRef.current||tagInputRef.current.value==""){
-            setAddTag((prev)=>(!prev))
+            handleAddTagBtnClicked(null)
             return
         }
 
@@ -39,6 +38,7 @@ function AddTagBtn({id}:AddTagBtnProps){
             }else{
                 alert("添加tag成功")
                 tagInputRef.current.value=""
+                fetchTags()
             }
         }catch(error){
             alert("添加tag失败:"+error)
@@ -47,10 +47,10 @@ function AddTagBtn({id}:AddTagBtnProps){
 
     return (
         <div>
-            <button onClick={handleAddClick}>
+            <button onClick={()=>handleAddTagBtnClicked(active?null:id)}>
                 +
             </button>
-            {addTag&&
+            {active&&
                 <>
                     <input
                         type="text"

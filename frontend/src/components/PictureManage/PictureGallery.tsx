@@ -1,9 +1,17 @@
 import "./PictureGallery.css"
 import PictureCard from "./PictureCard";
 import { usePicture } from "../../contexts/PictureContext";
+import { useTag } from "../../contexts/TagContext";
+import { useState } from "react";
 
 function PictureGallery(){
     const {pictures,loading,deletePictures}=usePicture()
+    const [activeId,setActiveId]=useState<number|null>(null)
+    const {tags}=useTag()
+
+    const handleAddTagBtnClicked=(id:number|null)=>{
+        setActiveId(id)
+    }
 
     if(loading){
         return(
@@ -15,7 +23,15 @@ function PictureGallery(){
     return(
         <div className="PictureGallery">
             {pictures?.map((picture)=>(
-                <PictureCard key={picture.id} id={picture.id} path={picture.path} onDelete={deletePictures}/>
+                <PictureCard 
+                    key={picture.id} 
+                    id={picture.id} 
+                    path={picture.path} 
+                    tags={tags[picture.id]??[]}
+                    active={activeId==picture.id}
+                    onDelete={deletePictures}
+                    handleAddTagBtnClicked={handleAddTagBtnClicked}
+                />
             ))}
         </div>
     )

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"picturemanager/db"
 	"picturemanager/models"
+	"picturemanager/utils"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -50,7 +51,7 @@ func UploadPicture(c *gin.Context) {
 			PicturePath: savePath,
 		}
 		if err := db.DB.Create(&newPicture).Error; err != nil {
-			fmt.Printf("[UploadPicture]insert newPicture failed")
+			fmt.Printf("[UploadPicture]insert newPicture failed\n")
 			c.JSON(500, gin.H{
 				"success": false,
 				"error":   "failed to insert data into DB",
@@ -63,6 +64,18 @@ func UploadPicture(c *gin.Context) {
 				"error":   "failed to save file",
 			})
 			return
+		}
+		//如果有exif,解析并绑定ExifTag
+		if ext == ".jpg" || ext == ".jpeg" {
+			f, err := file.Open()
+			if err != nil {
+				fmt.Printf("[UploadPicture]failed to open file to get exif:%v\n", err)
+				continue
+			}
+			if err = utils.BindExifTag(newPicture.ID, f); err != nil {
+				fmt.Printf("[UploadPicture]failed to bind exif tags for %s: %v\n", file.Filename, err)
+			}
+			f.Close()
 		}
 	}
 	c.JSON(200, gin.H{
