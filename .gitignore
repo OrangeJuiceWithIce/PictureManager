@@ -19,6 +19,10 @@ backend/*.exe
 backend/*.dll
 backend/*.so
 backend/*.dylib
+backend/uploads/**
+!backend/uploads/.gitkeep
+backend/thumbnail/**
+!backend/thumbnail/.gitkeep
 
 # Editor
 .vscode/*
