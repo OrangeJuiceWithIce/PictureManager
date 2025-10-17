@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Picture } from "../types/picture";
 import { useAuth } from "./AuthContext";
+import type { SearchParams } from "./SearchContext";
 
 interface PictureContextType{
     pictures:Picture[]|null;
     loading:boolean;
-    fetchPictures:()=>Promise<void>;
+    fetchPictures:(searchParams?:SearchParams)=>Promise<void>;
     deletePictures:(id:number)=>Promise<void>;
 }
 
@@ -14,26 +15,38 @@ const PictureContext=createContext<PictureContextType|undefined>(undefined)
 export const PictureProvider=({children}:{children:React.ReactNode})=>{
     const [pictures,setPictures]=useState<Picture[]|null>(null)
     const [loading,setLoading]=useState(false)
-    const {token}=useAuth()
 
-    const fetchPictures=async()=>{
+    const {token}=useAuth()
+    
+    const fetchPictures=async(searchParams?:SearchParams)=>{
         setLoading(true)
         try{
-            const res=await fetch(`http://localhost:8080/getpict?limit=20`,{
-                method:"GET",
+            const body:any={
+                offset:0,
+                limit:20,
+            }
+            if(searchParams){
+                body.time=searchParams.time
+                body.selectedTags=searchParams.selectedTags
+            }
+
+            const res=await fetch("http://localhost:8080/getpict",{
+                method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,
+                    "Content-Type":"appliction/json",
                 },
+                body:JSON.stringify(body),
             })
 
             const data=await res.json()
-            if(!data.success){
-                alert("获取图片失败:"+data.error)
-            }else{
+            if(data.success&&Array.isArray(data.pictures)){
                 setPictures(data.pictures)
+            }else{
+                alert("搜索失败")
             }
         }catch(error){
-            alert("获取图片失败:"+error)
+            alert("搜索失败"+error)
         }finally{
             setLoading(false)
         }

@@ -9,14 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func BindTag(pictureId uint, tagName, tagType string) error {
+func BindTag(pictureId uint, tagName string) error {
 	//检查是否已有同类型tag
 	var tag models.Tag
-	if err := db.DB.Where("name=? AND type=?", tagName, tagType).First(&tag).Error; err != nil {
+	if err := db.DB.Where("name=?", tagName).First(&tag).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			tag = models.Tag{
 				Name: tagName,
-				Type: tagType,
 			}
 			if err := db.DB.Create(&tag).Error; err != nil {
 				return fmt.Errorf("failed to create new tag")

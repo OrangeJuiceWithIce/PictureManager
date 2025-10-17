@@ -12,7 +12,6 @@ import (
 type AddTagRequest struct {
 	PictureID uint   `json:"pictureID"`
 	TagName   string `json:"tagName"`
-	TagType   string `json:"tagType"`
 }
 
 func AddTag(c *gin.Context) {
@@ -39,14 +38,14 @@ func AddTag(c *gin.Context) {
 	}
 
 	if count == 0 {
-		c.JSON(400, gin.H{
+		c.JSON(404, gin.H{
 			"success": false,
 			"error":   "invalid authority for picture",
 		})
 		return
 	}
 	//关联tag
-	if err := utils.BindTag(data.PictureID, data.TagName, data.TagType); err != nil {
+	if err := utils.BindTag(data.PictureID, data.TagName); err != nil {
 		c.JSON(500, gin.H{
 			"success": false,
 			"error":   err.Error(),
@@ -81,7 +80,6 @@ func GetTag(c *gin.Context) {
 	type Tag struct {
 		ID   uint   `json:"id"`
 		Name string `json:"name"`
-		Type string `json:"type"`
 	}
 
 	tagMap := make(map[uint][]Tag)
@@ -92,7 +90,6 @@ func GetTag(c *gin.Context) {
 			temp = append(temp, Tag{
 				ID:   t.ID,
 				Name: t.Name,
-				Type: t.Type,
 			})
 		}
 		tagMap[pic.ID] = temp
@@ -101,5 +98,56 @@ func GetTag(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"success": true,
 		"tags":    tagMap,
+	})
+}
+
+type DeleteTagRequest struct {
+	PictureId uint `json:"pictureId"`
+	TagId     uint `json:"tagId"`
+}
+
+func DeleteTag(c *gin.Context) {
+	var deleteTagReq DeleteTagRequest
+	if err := c.ShouldBindJSON(&deleteTagReq); err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"error":   "invalid request body",
+		})
+		return
+	}
+
+	userIdRaw, _ := c.Get("userId")
+	userId := userIdRaw.(uint)
+
+	//检查权限
+	var count int64
+	if err := db.DB.Model(&models.Picture{}).Where("user_id=? AND id=?", userId, deleteTagReq.PictureId).Count(&count).Error; err != nil {
+		fmt.Printf("[AddTag]failed to delete tag:%v\n", err)
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to check authority for picture",
+		})
+		return
+	}
+
+	if count == 0 {
+		c.JSON(404, gin.H{
+			"success": false,
+			"error":   "invalid authority for picture",
+		})
+		return
+	}
+
+	if err := db.DB.Where("picture_id = ? AND tag_id = ?", deleteTagReq.PictureId, deleteTagReq.TagId).
+		Delete(&models.PictureTag{}).Error; err != nil {
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to unbind tag"},
+		)
+		return
+	}
+	c.JSON(200, gin.H{
+		"success": true,
+		"error":   nil,
 	})
 }

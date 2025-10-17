@@ -19,7 +19,6 @@ func ParseExif(file multipart.File) ([]models.Tag, error) {
 	if t, err := exifmeta.DateTime(); err == nil {
 		tags = append(tags, models.Tag{
 			Name: t.Format("2006-01"),
-			Type: "exif",
 		})
 	}
 	//经纬度
@@ -27,13 +26,11 @@ func ParseExif(file multipart.File) ([]models.Tag, error) {
 		if !math.IsNaN(lat) {
 			tags = append(tags, models.Tag{
 				Name: fmt.Sprintf("Lat:%.2f", lat),
-				Type: "exif",
 			})
 		}
 		if !math.IsNaN(long) {
 			tags = append(tags, models.Tag{
 				Name: fmt.Sprintf("long:%.2f", long),
-				Type: "exif",
 			})
 		}
 	}
@@ -44,7 +41,6 @@ func ParseExif(file multipart.File) ([]models.Tag, error) {
 			hInt, _ := h.Int(0)
 			tags = append(tags, models.Tag{
 				Name: fmt.Sprintf("%dx%d", wInt, hInt),
-				Type: "exif",
 			})
 		}
 	}
@@ -59,7 +55,7 @@ func BindExifTag(pictureID uint, file multipart.File) error {
 	}
 
 	for _, tag := range tags {
-		if err := BindTag(pictureID, tag.Name, tag.Type); err != nil {
+		if err := BindTag(pictureID, tag.Name); err != nil {
 			return err
 		}
 	}

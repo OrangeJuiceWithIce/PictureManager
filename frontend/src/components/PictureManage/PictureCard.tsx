@@ -24,7 +24,7 @@ function PictureCard({id,path,tags,active,onDelete,handleAddTagBtnClicked}:Pictu
             >
                 X
             </button>
-            <TagGallery tags={tags}/>
+            <TagGallery pictureId={id} tags={tags}/>
             <AddTagSection id={id} active={active} handleAddTagBtnClicked={handleAddTagBtnClicked}/>
         </div>
     )

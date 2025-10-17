@@ -27,6 +27,7 @@ func UploadPicture(c *gin.Context) {
 			"success": false,
 			"error":   "no picture uploaded",
 		})
+		return
 	}
 	for _, file := range files {
 		ext := filepath.Ext(file.Filename)
@@ -50,6 +51,7 @@ func UploadPicture(c *gin.Context) {
 			PictureName: file.Filename,
 			PicturePath: savePath,
 		}
+		//插入数据
 		if err := db.DB.Create(&newPicture).Error; err != nil {
 			fmt.Printf("[UploadPicture]insert newPicture failed\n")
 			c.JSON(500, gin.H{
@@ -58,6 +60,7 @@ func UploadPicture(c *gin.Context) {
 			})
 			return
 		}
+		//保存图片
 		if err = c.SaveUploadedFile(file, savePath); err != nil {
 			c.JSON(500, gin.H{
 				"success": false,
@@ -72,10 +75,10 @@ func UploadPicture(c *gin.Context) {
 				fmt.Printf("[UploadPicture]failed to open file to get exif:%v\n", err)
 				continue
 			}
+			defer f.Close()
 			if err = utils.BindExifTag(newPicture.ID, f); err != nil {
 				fmt.Printf("[UploadPicture]failed to bind exif tags for %s: %v\n", file.Filename, err)
 			}
-			f.Close()
 		}
 	}
 	c.JSON(200, gin.H{
@@ -84,16 +87,30 @@ func UploadPicture(c *gin.Context) {
 	})
 }
 
+type GetPictureRequest struct {
+	Offset       int      `json:"offset"`
+	Limit        int      `json:"limit"`
+	Time         string   `json:"time"`
+	SelectedTags []string `json:"selectedTags"`
+}
+
 func GetPicture(c *gin.Context) {
-	limitStr := c.DefaultQuery("limit", "10")
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
+	var data GetPictureRequest
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(400, gin.H{
 			"success": false,
-			"error":   "query'limit' should be number",
+			"error":   "invalid request body",
 		})
 		return
 	}
+
+	if data.Limit <= 0 {
+		data.Limit = 20
+	}
+	if data.Offset < 0 {
+		data.Offset = 0
+	}
+
 	//只返回该用户照片的ID,PicturePath字段
 	type Picture struct {
 		ID   uint   `json:"id"`
@@ -104,7 +121,33 @@ func GetPicture(c *gin.Context) {
 	userId, _ := userIdRaw.(uint)
 
 	var pictures []Picture
-	if err := db.DB.Model(&models.Picture{}).Select("id , picture_path as path").Where("user_id = ?", userId).Order("updated_at desc").Limit(limit).Find(&pictures).Error; err != nil {
+	//匹配时间
+	query := db.DB.Model(&models.Picture{}).Select("pictures.id , pictures.picture_path as path").Where("user_id = ?", userId)
+	if data.Time != "" && data.Time != "all" {
+		startTime, err := utils.ConverTimeFilter(data.Time)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"success": false,
+				"error":   "invalid time filter",
+			})
+			return
+		}
+		query = query.Where("pictures.created_at>=?", startTime)
+	}
+	//拥有所有标签
+	filteredTags := utils.FilterEmptyString(data.SelectedTags)
+	if len(filteredTags) > 0 {
+		query = query.
+			Joins("JOIN picture_tags ON picture_tags.picture_id = pictures.id").
+			Joins("JOIN tags ON picture_tags.tag_id = tags.id").
+			Where("tags.name IN ?", filteredTags).
+			Group("pictures.id").
+			Having("COUNT(DISTINCT tags.id)=?", len(filteredTags))
+	}
+	//分页查询
+	query = query.Order("pictures.updated_at desc").Limit(data.Limit).Offset(data.Offset)
+	//执行查询
+	if err := query.Find(&pictures).Error; err != nil {
 		c.JSON(500, gin.H{
 			"success": false,
 			"error":   "failed to search pictures in DB",

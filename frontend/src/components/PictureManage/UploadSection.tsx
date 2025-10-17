@@ -2,13 +2,14 @@ import type React from "react";
 import { useRef, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { usePicture } from "../../contexts/PictureContext";
+import { useSearch } from "../../contexts/SearchContext";
 
 function UploadSection(){
     const  [selectedFiles,setSelectedFiles]=useState<FileList|null>(null)
     const fileInputRef=useRef<HTMLInputElement>(null)
 
     const {token}=useAuth()
-
+    const {searchParams}=useSearch()
     const {fetchPictures}=usePicture()
 
     const handleFileChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
@@ -40,7 +41,7 @@ function UploadSection(){
                 alert(`图片上传失败`+data.error)
             }else{
                 alert(`图片上传成功`)
-                await fetchPictures()
+                await fetchPictures(searchParams)
             }
         }catch(error){
             console.error("上传出错:",error);

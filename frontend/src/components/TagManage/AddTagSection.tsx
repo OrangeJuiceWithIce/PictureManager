@@ -29,7 +29,6 @@ function AddTagBtn({id,active,handleAddTagBtnClicked}:AddTagBtnProps){
                 body:JSON.stringify({
                     "pictureID":id,
                     "tagName":tagInputRef.current.value,
-                    "tagType":"custom",
                 }),
             })
             const data=await res.json()
