@@ -30,7 +30,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
                 body.selectedTags=searchParams.selectedTags
             }
 
-            const res=await fetch("http://localhost:8080/getpict",{
+            const res=await fetch("http://localhost:8080/searchpict",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,

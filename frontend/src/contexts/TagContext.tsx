@@ -50,7 +50,7 @@ export const TagProvider=({children}:{children:React.ReactNode})=>{
     
     useEffect(()=>{
         fetchTags()
-    },[pictures])
+    },[pictures,token])
 
     const value:TagContextType={
         tags,

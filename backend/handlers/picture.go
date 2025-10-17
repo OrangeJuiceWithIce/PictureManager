@@ -2,15 +2,23 @@ package handlers
 
 import (
 	"fmt"
+	"image"
 	"path/filepath"
 	"picturemanager/db"
 	"picturemanager/models"
 	"picturemanager/utils"
 	"strconv"
 
+	"github.com/disintegration/imaging"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+// 只返回该用户照片的ID,PicturePath字段
+type Picture struct {
+	ID   uint   `json:"id"`
+	Path string `json:"path"`
+}
 
 func UploadPicture(c *gin.Context) {
 	form, err := c.MultipartForm()
@@ -42,14 +50,16 @@ func UploadPicture(c *gin.Context) {
 		}
 		uniqueName := fmt.Sprintf("%s%s", uuid.New(), ext)
 		savePath := filepath.Join("uploads", uniqueName)
+		thumbnailPath := filepath.Join("thumbnail", uniqueName)
 		//从上下文中获取userId
 		userIdRaw, _ := c.Get("userId")
 		userId, _ := userIdRaw.(uint)
 
 		newPicture := &models.Picture{
-			UserID:      userId,
-			PictureName: file.Filename,
-			PicturePath: savePath,
+			UserID:        userId,
+			PictureName:   file.Filename,
+			PicturePath:   savePath,
+			ThumbnailPath: thumbnailPath,
 		}
 		//插入数据
 		if err := db.DB.Create(&newPicture).Error; err != nil {
@@ -68,6 +78,16 @@ func UploadPicture(c *gin.Context) {
 			})
 			return
 		}
+
+		srcImg, err := imaging.Open(savePath)
+		if err != nil {
+			fmt.Printf("[UploadPicture]failed to open image for thumbnail production:%v\n", err)
+		} else {
+			thumbImg := imaging.Thumbnail(srcImg, 200, 200, imaging.Lanczos)
+			if err := imaging.Save(thumbImg, thumbnailPath); err != nil {
+				fmt.Printf("[UploadPicture]failed to save thumbnail:%v\n", err)
+			}
+		}
 		//如果有exif,解析并绑定ExifTag
 		if ext == ".jpg" || ext == ".jpeg" {
 			f, err := file.Open()
@@ -83,19 +103,18 @@ func UploadPicture(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"success": true,
-		"error":   nil,
 	})
 }
 
-type GetPictureRequest struct {
+type SearchPictureRequest struct {
 	Offset       int      `json:"offset"`
 	Limit        int      `json:"limit"`
 	Time         string   `json:"time"`
 	SelectedTags []string `json:"selectedTags"`
 }
 
-func GetPicture(c *gin.Context) {
-	var data GetPictureRequest
+func SearchPicture(c *gin.Context) {
+	var data SearchPictureRequest
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(400, gin.H{
 			"success": false,
@@ -111,18 +130,12 @@ func GetPicture(c *gin.Context) {
 		data.Offset = 0
 	}
 
-	//只返回该用户照片的ID,PicturePath字段
-	type Picture struct {
-		ID   uint   `json:"id"`
-		Path string `json:"path"`
-	}
-
 	userIdRaw, _ := c.Get("userId")
 	userId, _ := userIdRaw.(uint)
 
 	var pictures []Picture
 	//匹配时间
-	query := db.DB.Model(&models.Picture{}).Select("pictures.id , pictures.picture_path as path").Where("user_id = ?", userId)
+	query := db.DB.Model(&models.Picture{}).Select("pictures.id , pictures.thumbnail_path as path").Where("user_id = ?", userId)
 	if data.Time != "" && data.Time != "all" {
 		startTime, err := utils.ConverTimeFilter(data.Time)
 		if err != nil {
@@ -156,8 +169,41 @@ func GetPicture(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"success":  true,
-		"error":    nil,
 		"pictures": pictures,
+	})
+}
+
+func GetPictureByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"error":   "invalid id",
+		})
+		return
+	}
+
+	userIdRaw, _ := c.Get("userId")
+	userId, _ := userIdRaw.(uint)
+
+	var picture Picture
+	err = db.DB.
+		Model(&models.Picture{}).
+		Select("id,picture_path as path").
+		Where("id = ? AND user_id=?", id, userId).
+		First(&picture).Error
+	if err != nil {
+		c.JSON(404, gin.H{
+			"success": false,
+			"error":   "picture not found",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"success": true,
+		"picture": picture,
 	})
 }
 
@@ -191,7 +237,100 @@ func DeletePicture(c *gin.Context) {
 	} else {
 		c.JSON(200, gin.H{
 			"success": true,
-			"error":   nil,
 		})
 	}
+}
+
+type EditPictureRequest struct {
+	PictureId uint `json:"pictureId"`
+	Rotate    int  `json:"rotate"`
+	Grayscale bool `json:"grayscale"`
+	Crop      *struct {
+		X      int `json:"x"`
+		Y      int `json:"y"`
+		Width  int `json:"width"`
+		Height int `json:"height"`
+	} `json:"crop"`
+}
+
+func EditPicture(c *gin.Context) {
+	var req EditPictureRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"error":   "invalid body",
+		})
+		return
+	}
+
+	userIdRaw, _ := c.Get("userId")
+	userId := userIdRaw.(uint)
+
+	var pic models.Picture
+	if err := db.DB.Where("id = ? AND user_id = ?", req.PictureId, userId).First(&pic).Error; err != nil {
+		c.JSON(404, gin.H{
+			"success": false,
+			"error":   "picture not found",
+		})
+		return
+	}
+
+	src, err := imaging.Open(pic.PicturePath)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to open image",
+		})
+		return
+	}
+
+	edited := src
+
+	if req.Crop != nil {
+		rect := image.Rect(req.Crop.X, req.Crop.Y, req.Crop.X+req.Crop.Width, req.Crop.Y+req.Crop.Height)
+		edited = imaging.Crop(edited, rect)
+	}
+
+	if req.Rotate != 0 {
+		edited = imaging.Rotate(edited, float64(req.Rotate), nil)
+	}
+
+	if req.Grayscale {
+		edited = imaging.Grayscale(edited)
+	}
+
+	uniqueName := fmt.Sprintf("%s_edited.jpg", uuid.New())
+	savePath := filepath.Join("uploads", uniqueName)
+	thumbPath := filepath.Join("thumbnail", uniqueName)
+
+	if err := imaging.Save(edited, savePath); err != nil {
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to save edited image",
+		})
+		return
+	}
+
+	thumb := imaging.Thumbnail(edited, 200, 200, imaging.Lanczos)
+	_ = imaging.Save(thumb, thumbPath)
+
+	newPic := models.Picture{
+		UserID:        userId,
+		PictureName:   "edited_" + pic.PictureName,
+		PicturePath:   savePath,
+		ThumbnailPath: thumbPath,
+	}
+
+	if err := db.DB.Create(&newPic).Error; err != nil {
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to insert new picture",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"success":      true,
+		"newPictureId": newPic.ID,
+	})
 }

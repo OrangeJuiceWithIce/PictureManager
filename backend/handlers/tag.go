@@ -54,7 +54,6 @@ func AddTag(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"success": true,
-		"error":   nil,
 	})
 }
 
@@ -148,6 +147,5 @@ func DeleteTag(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"success": true,
-		"error":   nil,
 	})
 }

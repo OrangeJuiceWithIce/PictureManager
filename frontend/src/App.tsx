@@ -9,6 +9,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './utils/ProtectedRoute'
 import AuthRoute from './utils/AuthRoute'
 import PictureManagePage from './pages/PictureManagePage/PictureManagePage'
+import PictureDetail from './components/PictureManage/PictureDetail'
 
 function App() {
   return (
@@ -37,9 +38,15 @@ function App() {
             </ProtectedRoute>
           }></Route>
 
-          <Route path='/picture' element={
+          <Route path='/mypicture' element={
             <ProtectedRoute>
               <PictureManagePage />
+            </ProtectedRoute>
+          }></Route>
+
+          <Route path="/picture/:id" element={
+            <ProtectedRoute>
+              <PictureDetail />
             </ProtectedRoute>
           }></Route>
 

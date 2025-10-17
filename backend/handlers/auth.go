@@ -71,7 +71,6 @@ func Register(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"success": true,
-		"error":   nil,
 		"user":    gin.H{"userId": strconv.Itoa(int(newuser.ID)), "email": newuser.Email, "username": newuser.Username},
 		"token":   token,
 	})
@@ -103,7 +102,6 @@ func Login(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"success": true,
-		"error":   nil,
 		"user":    gin.H{"userId": strconv.Itoa(int(user.ID)), "email": user.Email, "username": user.Username},
 		"token":   token,
 	})
