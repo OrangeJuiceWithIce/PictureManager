@@ -1,33 +1,225 @@
-.PictureCard{
+/* 图片卡片容器 */
+.picture-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.picture-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* 图片包装器 */
+.picture-card-image-wrapper {
     position: relative;
-    
-    height:300px;
-}
-
-.PictureCard img{
     width: 100%;
-    height:100%;
+    height: 200px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+/* 图片样式 */
+.picture-card-image {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
-.PictureCard .deleteBtn{
+.picture-card-image:hover {
+    transform: scale(1.05);
+}
+
+/* 删除按钮 */
+.picture-delete-btn {
     position: absolute;
-    top:5%;
-    right:5%;
-}
-
-.PictureCard button{    
-    width:30px;
-    height:30px;
-
-    border:none;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border: none;
     border-radius: 50%;
-
-    background-color:transparent;
-
-    cursor:pointer;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    color: #ff4757;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.PictureCard button:hover{
-    background-color:rgba(255,255,255,0.8);
+.picture-card:hover .picture-delete-btn {
+    opacity: 1;
+}
+
+.picture-delete-btn:hover {
+    background: rgba(255, 71, 87, 0.1);
+    transform: scale(1.1);
+    box-shadow: 0 2px 12px rgba(255, 71, 87, 0.3);
+}
+
+.picture-delete-btn:active {
+    transform: scale(0.95);
+}
+
+.picture-delete-btn svg {
+    flex-shrink: 0;
+}
+
+/* 卡片底部区域 */
+.picture-card-footer {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    background: #ffffff;
+}
+
+/* 标签展示区域 */
+.TagGallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    min-height: 24px;
+}
+
+/* 单个标签项 */
+.TagGallery span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #e8f4f8;
+    color: #2c5f7f;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.TagGallery span:hover {
+    background: #d4ecf6;
+    transform: translateY(-1px);
+}
+
+/* 标签内的删除按钮 */
+.TagGallery span button {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(44, 95, 127, 0.2);
+    color: #2c5f7f;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    font-weight: 600;
+}
+
+.TagGallery span button:hover {
+    background: rgba(44, 95, 127, 0.4);
+    transform: scale(1.15);
+}
+
+/* 添加标签区域 */
+.add-tag-section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 添加标签按钮 */
+.add-tag-section > button {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.add-tag-section > button:hover {
+    background: #3a7bc8;
+    transform: scale(1.1);
+}
+
+.add-tag-section > button:active {
+    transform: scale(0.95);
+}
+
+/* 标签输入框 */
+.add-tag-section input {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
+    outline: none;
+    transition: all 0.2s ease;
+    background: #f9f9f9;
+}
+
+.add-tag-section input:focus {
+    border-color: #4a90e2;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* 确认按钮 */
+.add-tag-section .confirm-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.add-tag-section .confirm-btn:hover {
+    background: #3a7bc8;
+    transform: scale(1.1);
+}
+
+.add-tag-section .confirm-btn:active {
+    transform: scale(0.95);
+}
+
+.add-tag-section .confirm-btn svg {
+    flex-shrink: 0;
 }

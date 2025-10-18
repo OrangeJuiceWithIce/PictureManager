@@ -4,15 +4,18 @@ import SearchBar from "../../components/Search/SearchBar";
 import { PictureProvider } from "../../contexts/PictureContext";
 import { SearchProvider } from "../../contexts/SearchContext";
 import { TagProvider } from "../../contexts/TagContext";
+import"./PictureManage.css"
 
 function PictureManagePage(){
     return(
         <SearchProvider>
                 <PictureProvider>
                     <TagProvider>
-                        <SearchBar />
-                        <UploadSection />
-                        <PictureGallery />
+                        <div className="container">
+                            <SearchBar />
+                            <UploadSection />
+                            <PictureGallery />
+                        </div>
                     </TagProvider>
                 </PictureProvider>
         </SearchProvider>

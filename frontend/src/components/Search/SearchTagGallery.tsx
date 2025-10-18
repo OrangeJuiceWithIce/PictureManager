@@ -11,12 +11,18 @@ function SearchTagGallery(){
     return(
         <div className="SearchTagGallery">
             {tags?.map((tag,index)=>(
-                <span key={index} >
-                    #{tag}
-                    <button onClick={()=>handleDelete(tag)}>
-                        x
+                <div key={index} className="search-tag-item">
+                    <span className="search-tag-text">
+                        #{tag}
+                    </span>
+                    <button 
+                        className="search-tag-remove"
+                        onClick={()=>handleDelete(tag)}
+                        title="移除标签"
+                    >
+                        ×
                     </button>
-                </span>
+                </div>
             ))}
         </div>
     )

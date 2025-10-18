@@ -57,8 +57,14 @@ function TagGallery({pictureId,tags}:TagGalleryProps){
             {tags?.map((tag)=>(
                 <span key={tag.id} onClick={()=>handleTagClicked(tag.name)}>
                     #{tag.name}
-                    <button onClick={()=>handleDeleteTag(pictureId,tag.id)}>
-                        x
+                    <button 
+                        onClick={(e)=>{
+                            e.stopPropagation();
+                            handleDeleteTag(pictureId,tag.id);
+                        }}
+                        title="删除标签"
+                    >
+                        ×
                     </button>
                 </span>
             ))}

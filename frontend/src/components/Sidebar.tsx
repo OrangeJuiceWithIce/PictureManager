@@ -3,15 +3,14 @@ import './Sidebar.css'
 import { useAuth } from "../contexts/AuthContext"
 
 function Sidebar(){
-    const {isAuthenticated,logout}=useAuth()
+    const {isAuthenticated}=useAuth()
     return(
         <nav className="Sidebar">
-                <Link to="/">首页</Link>
+                <Link to="/homepage">首页</Link>
                 {isAuthenticated?(
                     <>
-                        <Link to="/dashBoard">用户仪表盘</Link>
-                        <Link to="/mypicture">图片</Link>
-                        <button onClick={logout}>Logout</button>
+                        <Link to="/dashBoard">用户设置</Link>
+                        <Link to="/mypicture">我的图片</Link>
                     </>              
                 )
                 :(

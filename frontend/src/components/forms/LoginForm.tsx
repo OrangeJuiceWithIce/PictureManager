@@ -1,6 +1,7 @@
 import { useState } from "react"
 import "./form.css"
 import { useAuth } from "../../contexts/AuthContext"
+import Button from "../ui/Button"
 
 function LoginForm(){
     const [email,setEmail]=useState('')
@@ -40,7 +41,7 @@ function LoginForm(){
             <input
                 name="email"
                 type="email"
-                placeholder="email"
+                placeholder="请输入邮箱地址"
                 value={email}
                 onChange={(event)=>setEmail(event.target.value)}
                 required
@@ -48,14 +49,12 @@ function LoginForm(){
             <input 
                 name="password"
                 type="password"
-                placeholder="password"
+                placeholder="请输入密码"
                 value={password}
                 onChange={(event)=>setPassword(event.target.value)}
                 required
             />
-            <button type="submit">
-                Login
-            </button>
+            <Button type="submit">登录</Button>
         </form>
     )
 }

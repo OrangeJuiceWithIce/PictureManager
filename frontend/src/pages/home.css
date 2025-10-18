@@ -1,0 +1,89 @@
+.Home {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url('/AuthBackground.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.Home::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 0;
+}
+
+.Home > * {
+    position: relative;
+    z-index: 1;
+}
+
+.Home h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #0b0b0c;
+    margin-bottom: 32px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.Home-Card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 32px 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+.Home-Card ul {
+    margin-top: 20px;
+    padding-left: 24px;
+}
+
+.Home-Card li {
+    margin-bottom: 12px;
+    color: #34495e;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+    .Home {
+        padding: 16px;
+    }
+    
+    .Home h1 {
+        font-size: 36px;
+        margin-bottom: 24px;
+    }
+    
+    .Home-Card {
+        padding: 24px 28px;
+        font-size: 16px;
+    }
+    
+    .Home-Card li {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+}

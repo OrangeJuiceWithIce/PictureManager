@@ -1,5 +1,32 @@
-.PictureGallery{
+/* 图片画廊网格布局 */
+.PictureGallery {
     display: grid;
-    grid-template-columns:repeat(auto-fill,minmax(200px,300px));
-    gap:10px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .PictureGallery {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .PictureGallery {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+    }
+}
+
+/* 加载状态 */
+.PictureGallery-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    color: #888;
+    font-size: 14px;
 }

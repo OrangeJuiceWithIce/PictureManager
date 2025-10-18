@@ -15,8 +15,8 @@ function PictureGallery(){
 
     if(loading){
         return(
-            <div>
-                加载中
+            <div className="PictureGallery-loading">
+                加载中...
             </div>
         )
     }

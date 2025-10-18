@@ -1,0 +1,139 @@
+/* Dashboard 容器 */
+.dashboard-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+}
+
+/* Dashboard 头部 */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    gap: 20px;
+}
+
+/* 用户信息（最左边） */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 用户头像 */
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* 用户名 */
+.user-name {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* 欢迎信息（中间） */
+.dashboard-welcome {
+    flex: 1;
+    text-align: center;
+}
+
+.dashboard-welcome h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 2px 0;
+}
+
+.dashboard-subtitle {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+}
+
+/* 退出登录按钮（最右边） */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: 1px solid #ff4757;
+    background: #ffffff;
+    color: #ff4757;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.logout-btn:hover {
+    background: #ff4757;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+}
+
+.logout-btn:active {
+    transform: translateY(0);
+}
+
+.logout-btn svg {
+    flex-shrink: 0;
+}
+
+/* Dashboard 内容区域 */
+.dashboard-content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+    }
+    
+    .dashboard-welcome {
+        order: 3;
+        width: 100%;
+        margin-top: 8px;
+        text-align: left;
+    }
+    
+    .dashboard-welcome h2 {
+        font-size: 16px;
+    }
+    
+    .dashboard-subtitle {
+        font-size: 11px;
+    }
+    
+    .logout-btn {
+        margin-left: auto;
+    }
+    
+    .dashboard-content {
+        padding: 20px;
+    }
+}
+
