@@ -56,7 +56,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
     }
 
     const deletePictures=async(id:number)=>{
-        const confirmed=window.confirm("Are you sure to delete this picture?")
+        const confirmed=window.confirm("你确定要删除这张图片吗?")
         if(!confirmed)return
 
         try{

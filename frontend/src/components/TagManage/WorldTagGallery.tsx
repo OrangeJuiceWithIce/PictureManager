@@ -5,7 +5,6 @@ type WorldTagGalleryProps={
     tags:Tag[],
 }
 
-// World模式下的TagGallery，点击标签可添加到搜索栏
 function WorldTagGallery({tags}:WorldTagGalleryProps){
     const {searchParams, setSearchParams} = useWorld();
 

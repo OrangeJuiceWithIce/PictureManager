@@ -29,7 +29,9 @@ function TagGallery({pictureId,tags}:TagGalleryProps){
         })
     }
     //删除tag
-    const handleDeleteTag=async(pictureId:number,tagId:number)=>{
+    const handleDeleteTag=async(pictureId:number,tagId:number,tagName:string)=>{
+        const confirmation=confirm(`你确定要删除标签:${tagName}吗？`)
+        if(!confirmation)return
         try{
             const res=await fetch("/api/deletetag",{
                 method:"POST",
@@ -60,7 +62,7 @@ function TagGallery({pictureId,tags}:TagGalleryProps){
                     <button 
                         onClick={(e)=>{
                             e.stopPropagation();
-                            handleDeleteTag(pictureId,tag.id);
+                            handleDeleteTag(pictureId,tag.id,tag.name);
                         }}
                         title="删除标签"
                     >

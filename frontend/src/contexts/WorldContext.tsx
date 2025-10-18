@@ -63,9 +63,10 @@ export const WorldProvider = ({ children }: { children: React.ReactNode }) => {
         }));
     };
 
+    // 只在组件挂载时加载一次数据，之后需要手动点击搜索按钮
     useEffect(() => {
         fetchPublicPictures();
-    }, [searchParams]);
+    }, []); // 空依赖数组，只在挂载时执行一次
 
     const value: WorldContextType = {
         pictures,
