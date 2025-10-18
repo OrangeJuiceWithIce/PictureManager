@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import type { Picture } from "../../types/picture";
 import "./PictureDetail.css"
@@ -8,9 +8,13 @@ import ImageEditor from "./ImageEditor";
 function PictureDetail(){
     const {id}=useParams()
     const navigate = useNavigate()
+    const location = useLocation()
     const [picture,setPicture]=useState<Picture|null>(null)
     const {token}=useAuth()
     const [editing,setEditing]=useState(false)
+    
+    // 检查是否从World页面访问（只读模式）
+    const isReadOnly = location.state?.mode === 'world'
 
     useEffect(()=>{
         const fetchPicture=async()=>{
@@ -92,17 +96,19 @@ function PictureDetail(){
                             </svg>
                             <span>返回</span>
                         </button>
-                        <button 
-                            className="edit-btn"
-                            onClick={()=>setEditing(true)}
-                            title="编辑图片"
-                        >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            <span>编辑</span>
-                        </button>
+                        {!isReadOnly && (
+                            <button 
+                                className="edit-btn"
+                                onClick={()=>setEditing(true)}
+                                title="编辑图片"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                <span>编辑</span>
+                            </button>
+                        )}
                     </div>
                     <div className="picture-detail-image-wrapper">
                         <img

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 
 export interface SearchParams{
     time:string,
+    public:string,
     selectedTags:string[],
 }
 
@@ -15,6 +16,7 @@ const SearchContext=createContext<SearchContextType|undefined>(undefined)
 export const SearchProvider=({children}:{children:React.ReactNode})=>{
     const [searchParams,setSearchParamsState]=useState<SearchParams>({
         time:"all",
+        public:"all",
         selectedTags:[],
     })
 

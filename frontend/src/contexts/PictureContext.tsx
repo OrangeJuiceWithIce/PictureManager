@@ -1,13 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Picture } from "../types/picture";
 import { useAuth } from "./AuthContext";
-import type { SearchParams } from "./SearchContext";
+import { useSearch, type SearchParams } from "./SearchContext";
 
 interface PictureContextType{
     pictures:Picture[]|null;
     loading:boolean;
     fetchPictures:(searchParams?:SearchParams)=>Promise<void>;
     deletePictures:(id:number)=>Promise<void>;
+    handleSetPublic:(pictureId:number,ifPublic:boolean)=>void;
 }
 
 const PictureContext=createContext<PictureContextType|undefined>(undefined)
@@ -16,6 +17,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
     const [pictures,setPictures]=useState<Picture[]|null>(null)
     const [loading,setLoading]=useState(false)
 
+    const {searchParams}=useSearch()
     const {token}=useAuth()
     
     const fetchPictures=async(searchParams?:SearchParams)=>{
@@ -27,6 +29,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
             }
             if(searchParams){
                 body.time=searchParams.time
+                body.public=searchParams.public
                 body.selectedTags=searchParams.selectedTags
             }
 
@@ -75,6 +78,31 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
         }
     }
 
+    const handleSetPublic=async(pictureId:number,ifPublic:boolean)=>{
+        try{
+            const res = await fetch("http://localhost:8080/setpictpub",{
+                method:"POST",
+                headers:{
+                    "Authorization":`Bearer ${token}`,
+                    "Content-Type":"application/json",
+                },
+                body:JSON.stringify({
+                    "pictureId": pictureId,
+                    "public":ifPublic,
+                })
+            })
+            const data = await res.json()
+            if(data.success){
+                alert(`成功设置为Public:${ifPublic}`)
+                fetchPictures(searchParams)
+            }else{
+                alert("设置失败")
+            }
+        }catch(error){
+            alert("设置失败"+error)
+        }
+    }
+
     useEffect(()=>{
         fetchPictures()
     },[token])
@@ -84,6 +112,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
         loading,
         fetchPictures,
         deletePictures,
+        handleSetPublic,
     }
     return (
         <PictureContext.Provider value={value}>

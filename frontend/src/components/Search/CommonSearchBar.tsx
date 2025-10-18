@@ -1,0 +1,157 @@
+import { useState, useRef, useEffect } from "react"
+import "./SearchBar.css"
+
+interface CommonSearchBarProps {
+    // 时间过滤
+    timeValue: string;
+    onTimeChange: (time: string) => void;
+    
+    // 可见性过滤（可选）
+    showPublicFilter?: boolean;
+    publicValue?: string;
+    onPublicChange?: (visibility: string) => void;
+    
+    // 标签搜索
+    selectedTags: string[];
+    onTagsChange: (tags: string[]) => void;
+    
+    // 搜索按钮
+    onSearch: () => void;
+}
+
+function CommonSearchBar({
+    timeValue,
+    onTimeChange,
+    showPublicFilter = false,
+    publicValue,
+    onPublicChange,
+    selectedTags,
+    onTagsChange,
+    onSearch,
+}: CommonSearchBarProps) {
+    const [tagInput, setTagInput] = useState("");
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // 动态调整input宽度
+    useEffect(() => {
+        if (inputRef.current) {
+            const input = inputRef.current
+            const tempSpan = document.createElement('span')
+            tempSpan.style.visibility = 'hidden'
+            tempSpan.style.position = 'absolute'
+            tempSpan.style.fontSize = window.getComputedStyle(input).fontSize
+            tempSpan.style.fontFamily = window.getComputedStyle(input).fontFamily
+            tempSpan.textContent = tagInput || input.placeholder
+            document.body.appendChild(tempSpan)
+            
+            const textWidth = tempSpan.offsetWidth
+            document.body.removeChild(tempSpan)
+            
+            const minWidth = 60
+            const maxWidth = 120
+            const newWidth = Math.min(Math.max(textWidth + 20, minWidth), maxWidth)
+            input.style.width = `${newWidth}px`
+        }
+    }, [tagInput])
+
+    const handleAddTag = () => {
+        if (tagInput.trim() && !selectedTags.includes(tagInput.trim())) {
+            onTagsChange([...selectedTags, tagInput.trim()])
+            setTagInput("")
+        }
+    }
+
+    const handleRemoveTag = (tagToRemove: string) => {
+        onTagsChange(selectedTags.filter(tag => tag !== tagToRemove))
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleAddTag()
+        }
+    }
+
+    return (
+        <div className="search-bar-wrapper">
+            <div className="search-bar-container">
+                {/* 时间过滤器 */}
+                <select 
+                    className="filter"
+                    value={timeValue}
+                    onChange={(e) => onTimeChange(e.target.value)}
+                >
+                    <option value="all">全部</option>
+                    <option value="today">今天</option>
+                    <option value="week">本周</option>
+                    <option value="month">本月</option>
+                    <option value="year">今年</option>
+                </select>
+
+                {/* 可见性过滤器（可选） */}
+                {showPublicFilter && (
+                    <select 
+                        className="filter"
+                        value={publicValue}
+                        onChange={(e) => onPublicChange?.(e.target.value)}
+                    >
+                        <option value="all">全部</option>
+                        <option value="public">公开</option>
+                        <option value="private">私人</option>
+                    </select>
+                )}
+                
+                {/* 标签搜索区域 */}
+                <div className="search-input-area">
+                    <div className="SearchTagGallery">
+                        {selectedTags.map((tag, index) => (
+                            <span key={index} className="search-tag-item">
+                                <span className="search-tag-text">#{tag}</span>
+                                <button
+                                    className="search-tag-remove"
+                                    onClick={() => handleRemoveTag(tag)}
+                                    title="移除标签"
+                                >
+                                    ×
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                    
+                    <div className="tag-input-group">
+                        <input 
+                            ref={inputRef}
+                            type="text"
+                            className="tag-input"
+                            value={tagInput}
+                            placeholder="添加标签..."
+                            onChange={(e) => setTagInput(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
+                        <button
+                            className="add-tag-btn"
+                            onClick={handleAddTag}
+                            title="添加标签"
+                        >
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                {/* 搜索按钮 */}
+                <button
+                    className="search-btn"
+                    onClick={onSearch}
+                    title="搜索"
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    )
+}
+
+export default CommonSearchBar
+

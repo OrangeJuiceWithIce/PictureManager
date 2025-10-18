@@ -4,9 +4,9 @@ import SearchBar from "../../components/Search/SearchBar";
 import { PictureProvider } from "../../contexts/PictureContext";
 import { SearchProvider } from "../../contexts/SearchContext";
 import { TagProvider } from "../../contexts/TagContext";
-import"./PictureManage.css"
+import"./MyPicture.css"
 
-function PictureManagePage(){
+function MyPicturePage(){
     return(
         <SearchProvider>
                 <PictureProvider>
@@ -22,4 +22,4 @@ function PictureManagePage(){
     )
 }
 
-export default PictureManagePage
+export default MyPicturePage

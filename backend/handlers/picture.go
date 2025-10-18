@@ -14,10 +14,12 @@ import (
 	"github.com/google/uuid"
 )
 
-// 只返回该用户照片的ID,PicturePath字段
+// 只返回该用户照片的ID,PicturePath,Public字段
 type Picture struct {
-	ID   uint   `json:"id"`
-	Path string `json:"path"`
+	ID       uint   `json:"id"`
+	Public   bool   `json:"public"`
+	Path     string `json:"path"`
+	Username string `json:"username,omitempty"`
 }
 
 func UploadPicture(c *gin.Context) {
@@ -110,6 +112,7 @@ type SearchPictureRequest struct {
 	Offset       int      `json:"offset"`
 	Limit        int      `json:"limit"`
 	Time         string   `json:"time"`
+	Public       string   `json:"public"`
 	SelectedTags []string `json:"selectedTags"`
 }
 
@@ -134,8 +137,24 @@ func SearchPicture(c *gin.Context) {
 	userId, _ := userIdRaw.(uint)
 
 	var pictures []Picture
+	query := db.DB.Model(&models.Picture{}).Select("pictures.id , pictures.public , pictures.thumbnail_path as path").Where("user_id = ?", userId)
+	//匹配公开程度
+	if data.Public != "" && data.Public != "all" {
+		switch data.Public {
+		case "public":
+			query = query.Where("public=true")
+		case "private":
+			query = query.Where("public=false")
+		default:
+			c.JSON(400, gin.H{
+				"success": false,
+				"error":   "invalid visibility filter",
+			})
+			return
+		}
+	}
+
 	//匹配时间
-	query := db.DB.Model(&models.Picture{}).Select("pictures.id , pictures.thumbnail_path as path").Where("user_id = ?", userId)
 	if data.Time != "" && data.Time != "all" {
 		startTime, err := utils.ConverTimeFilter(data.Time)
 		if err != nil {
@@ -190,7 +209,7 @@ func GetPictureByID(c *gin.Context) {
 	var picture Picture
 	err = db.DB.
 		Model(&models.Picture{}).
-		Select("id,picture_path as path").
+		Select("id,public,picture_path as path").
 		Where("id = ? AND user_id=?", id, userId).
 		First(&picture).Error
 	if err != nil {
@@ -332,5 +351,115 @@ func EditPicture(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"success":      true,
 		"newPictureId": newPic.ID,
+	})
+}
+
+type SetPicturePublicReq struct {
+	PictureId uint `json:"pictureId"`
+	Public    bool `json:"public"`
+}
+
+func SetPicturePublic(c *gin.Context) {
+	var data SetPicturePublicReq
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"error":   "invalid request body",
+		})
+		return
+	}
+
+	userIdRaw, _ := c.Get("userId")
+	userId := userIdRaw.(uint)
+
+	result := db.DB.Model(&models.Picture{}).Where("id = ? AND user_id = ?", data.PictureId, userId).Update("public", data.Public)
+	if result.Error != nil {
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to update record",
+		})
+		return
+	}
+	if result.RowsAffected == 0 {
+		c.JSON(404, gin.H{
+			"success": false,
+			"error":   "record not found",
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"success": true,
+	})
+}
+
+type SearchPublicPictureRequest struct {
+	Offset       int      `json:"offset"`
+	Limit        int      `json:"limit"`
+	Time         string   `json:"time"`
+	SelectedTags []string `json:"selectedTags"`
+}
+
+func GetPublicPictures(c *gin.Context) {
+	var data SearchPublicPictureRequest
+	if err := c.ShouldBindJSON(&data); err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"error":   "invalid request body",
+		})
+		return
+	}
+
+	if data.Limit <= 0 {
+		data.Limit = 20
+	}
+	if data.Offset < 0 {
+		data.Offset = 0
+	}
+
+	var pictures []Picture
+	query := db.DB.Table("pictures").
+		Select("pictures.id, pictures.public, pictures.thumbnail_path as path, users.username").
+		Joins("JOIN users ON pictures.user_id = users.id").
+		Where("pictures.public = true")
+
+	// 匹配时间
+	if data.Time != "" && data.Time != "all" {
+		startTime, err := utils.ConverTimeFilter(data.Time)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"success": false,
+				"error":   "invalid time filter",
+			})
+			return
+		}
+		query = query.Where("pictures.created_at >= ?", startTime)
+	}
+
+	// 匹配标签
+	filteredTags := utils.FilterEmptyString(data.SelectedTags)
+	if len(filteredTags) > 0 {
+		query = query.
+			Joins("JOIN picture_tags ON picture_tags.picture_id = pictures.id").
+			Joins("JOIN tags ON picture_tags.tag_id = tags.id").
+			Where("tags.name IN ?", filteredTags).
+			Group("pictures.id, users.username").
+			Having("COUNT(DISTINCT tags.id)=?", len(filteredTags))
+	}
+
+	// 分页查询
+	query = query.Order("pictures.updated_at desc").Limit(data.Limit).Offset(data.Offset)
+
+	// 执行查询
+	if err := query.Find(&pictures).Error; err != nil {
+		c.JSON(500, gin.H{
+			"success": false,
+			"error":   "failed to search public pictures in DB",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"success":  true,
+		"pictures": pictures,
 	})
 }

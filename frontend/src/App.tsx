@@ -8,14 +8,19 @@ import Dashboard from './pages/DashBoard'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './utils/ProtectedRoute'
 import AuthRoute from './utils/AuthRoute'
-import PictureManagePage from './pages/PictureManagePage/PictureManagePage'
+import MyPicturePage from './pages/PictureManagePage/MyPicture'
 import PictureDetail from './components/PictureManage/PictureDetail'
+import World from './pages/PictureManagePage/World'
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route path='/' element={<Layout />}>
+          <Route path='/' element={
+              <HomePage />
+          }></Route>
+
           <Route path='/login' element={
             <AuthRoute>
               <LoginPage />
@@ -28,10 +33,6 @@ function App() {
             </AuthRoute>
           }/>
 
-          <Route path='/homepage' element={
-              <HomePage />
-          }></Route>
-
           <Route path='/dashboard' element={
             <ProtectedRoute>
               <Dashboard />
@@ -40,13 +41,19 @@ function App() {
 
           <Route path='/mypicture' element={
             <ProtectedRoute>
-              <PictureManagePage />
+              <MyPicturePage />
             </ProtectedRoute>
           }></Route>
 
           <Route path="/picture/:id" element={
             <ProtectedRoute>
               <PictureDetail />
+            </ProtectedRoute>
+          }></Route>
+
+          <Route path="/world" element={
+            <ProtectedRoute>
+              <World />
             </ProtectedRoute>
           }></Route>
 

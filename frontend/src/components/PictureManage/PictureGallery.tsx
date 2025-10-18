@@ -5,7 +5,7 @@ import { useTag } from "../../contexts/TagContext";
 import { useState } from "react";
 
 function PictureGallery(){
-    const {pictures,loading,deletePictures}=usePicture()
+    const {pictures,loading,deletePictures,handleSetPublic}=usePicture()
     const [activeId,setActiveId]=useState<number|null>(null)
     const {tags}=useTag()
 
@@ -26,11 +26,13 @@ function PictureGallery(){
                 <PictureCard 
                     key={picture.id} 
                     id={picture.id} 
+                    ifPublic={picture.public}
                     path={picture.path} 
                     tags={tags[picture.id]??[]}
                     active={activeId==picture.id}
                     onDelete={deletePictures}
                     handleAddTagBtnClicked={handleAddTagBtnClicked}
+                    handleSetPublicBtnClicked={()=>handleSetPublic(picture.id,!picture.public)}
                 />
             ))}
         </div>

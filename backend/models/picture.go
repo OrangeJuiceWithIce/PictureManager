@@ -9,5 +9,6 @@ type Picture struct {
 	PictureName   string `gorm:"varchar(255);not null"`
 	PicturePath   string `gorm:"varchar(255);not null"`
 	ThumbnailPath string `gorm:"varchar(255);not null"`
+	Public        bool   `gorm:"default:false"`
 	Tags          []Tag  `gorm:"many2many:picture_tags;constraint:OnDelete:CASCADE"`
 }

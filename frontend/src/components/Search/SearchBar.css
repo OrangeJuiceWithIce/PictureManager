@@ -29,7 +29,7 @@
 }
 
 /* 时间过滤器 */
-.time-filter {
+.filter {
     padding: 4px 10px;
     border: none;
     background: #f5f5f5;
@@ -42,11 +42,11 @@
     font-weight: 500;
 }
 
-.time-filter:hover {
+.filter:hover {
     background: #ebebeb;
 }
 
-.time-filter:focus {
+.filter:focus {
     background: #e0e0e0;
 }
 

@@ -22,15 +22,21 @@
     height: 200px;
     overflow: hidden;
     background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
 }
 
 /* 图片样式 */
 .picture-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     cursor: pointer;
     transition: transform 0.3s ease;
+    z-index: 0;
 }
 
 .picture-card-image:hover {
@@ -76,35 +82,93 @@
     flex-shrink: 0;
 }
 
+/* 可见度按钮 */
+.picture-visibility-btn {
+    position: absolute;
+    top: 48px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    color: #4a90e2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.picture-card:hover .picture-visibility-btn {
+    opacity: 1;
+}
+
+.picture-visibility-btn:hover {
+    background: rgba(74, 144, 226, 0.1);
+    transform: scale(1.1);
+    box-shadow: 0 2px 12px rgba(74, 144, 226, 0.3);
+}
+
+.picture-visibility-btn:active {
+    transform: scale(0.95);
+}
+
+.picture-visibility-btn svg {
+    flex-shrink: 0;
+}
+
 /* 卡片底部区域 */
 .picture-card-footer {
-    padding: 10px 12px;
+    position: relative;
+    margin-top: auto;
+    padding: 8px 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    flex: 1;
-    background: #ffffff;
+    gap: 6px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4), transparent);
+    z-index: 1;
+    backdrop-filter: blur(4px);
+}
+
+/* 用户名显示 (World模式) */
+.picture-card-username {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.picture-card-username svg {
+    flex-shrink: 0;
 }
 
 /* 标签展示区域 */
 .TagGallery {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
-    min-height: 24px;
+    min-height: 20px;
 }
 
 /* 单个标签项 */
 .TagGallery span {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    background: #e8f4f8;
+    gap: 3px;
+    background: rgba(255, 255, 255, 0.9);
     color: #2c5f7f;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -112,19 +176,29 @@
 }
 
 .TagGallery span:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+}
+
+/* World模式下的标签（可点击添加到搜索） */
+.TagGallery span.world-tag {
+    cursor: pointer;
+}
+
+.TagGallery span.world-tag:hover {
     background: #d4ecf6;
     transform: translateY(-1px);
 }
 
 /* 标签内的删除按钮 */
 .TagGallery span button {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     border: none;
     background: rgba(44, 95, 127, 0.2);
     color: #2c5f7f;
-    font-size: 10px;
+    font-size: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,18 +218,23 @@
 .add-tag-section {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 /* 添加标签按钮 */
 .add-tag-section > button {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     border-radius: 50%;
     border: none;
-    background: #4a90e2;
+    background: rgba(74, 144, 226, 0.9);
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -164,10 +243,11 @@
     transition: all 0.2s ease;
     padding: 0;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .add-tag-section > button:hover {
-    background: #3a7bc8;
+    background: rgba(58, 123, 200, 1);
     transform: scale(1.1);
 }
 
@@ -178,30 +258,33 @@
 /* 标签输入框 */
 .add-tag-section input {
     flex: 1;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 4px 10px;
-    font-size: 11px;
+    min-width: 0;
+    border: 1px solid rgba(224, 224, 224, 0.8);
+    border-radius: 10px;
+    padding: 3px 8px;
+    font-size: 10px;
     outline: none;
     transition: all 0.2s ease;
-    background: #f9f9f9;
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .add-tag-section input:focus {
     border-color: #4a90e2;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
 }
 
 /* 确认按钮 */
 .add-tag-section .confirm-btn {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     border-radius: 50%;
     border: none;
-    background: #4a90e2;
+    background: rgba(74, 144, 226, 0.9);
     color: white;
-    font-size: 14px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -209,10 +292,11 @@
     transition: all 0.2s ease;
     padding: 0;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .add-tag-section .confirm-btn:hover {
-    background: #3a7bc8;
+    background: rgba(58, 123, 200, 1);
     transform: scale(1.1);
 }
 
@@ -222,4 +306,6 @@
 
 .add-tag-section .confirm-btn svg {
     flex-shrink: 0;
+    width: 10px;
+    height: 10px;
 }
