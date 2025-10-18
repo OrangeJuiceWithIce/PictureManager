@@ -463,3 +463,34 @@ func GetPublicPictures(c *gin.Context) {
 		"pictures": pictures,
 	})
 }
+
+func GetPublicPictureByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"success": false,
+			"error":   "invalid id",
+		})
+		return
+	}
+
+	var picture Picture
+	err = db.DB.Table("pictures").
+		Select("pictures.id, pictures.public, pictures.picture_path as path, users.username").
+		Joins("JOIN users ON pictures.user_id = users.id").
+		Where("pictures.id = ? AND pictures.public = true", id).
+		First(&picture).Error
+	if err != nil {
+		c.JSON(404, gin.H{
+			"success": false,
+			"error":   "picture not found or not public",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"success": true,
+		"picture": picture,
+	})
+}

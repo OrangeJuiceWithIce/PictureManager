@@ -19,11 +19,18 @@ function PictureDetail(){
     useEffect(()=>{
         const fetchPicture=async()=>{
             try{
-                const res=await fetch(`/api/getpictbyid/${id}`,{
+                // 根据模式选择不同的接口
+                const url = isReadOnly ? `/api/getpublicpictbyid/${id}` : `/api/getpictbyid/${id}`
+                const headers: HeadersInit = {}
+                
+                // 只有在非只读模式下才需要认证
+                if (!isReadOnly) {
+                    headers["Authorization"] = `Bearer ${token}`
+                }
+                
+                const res=await fetch(url,{
                     method:"GET",
-                    headers:{
-                        "Authorization":`Bearer ${token}`,
-                    },
+                    headers,
                 })
                 const data=await res.json();
                 if(data.success){
@@ -36,7 +43,7 @@ function PictureDetail(){
             }
         }
         fetchPicture()
-    },[id,token])
+    },[id,token,isReadOnly])
 
     const handleSaveEdit=async(params:{rotate:number,grayscale:boolean,crop:{
         x:number,

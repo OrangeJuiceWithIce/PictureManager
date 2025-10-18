@@ -19,6 +19,7 @@ func main() {
 	r.GET("/verify-token", handlers.VerifyToken)
 	r.POST("/register", handlers.Register)
 	r.POST("/login", handlers.Login)
+	r.GET("/getpublicpictbyid/:id", handlers.GetPublicPictureByID)
 
 	//需要检验token的auth接口
 	auth := r.Group("/")
