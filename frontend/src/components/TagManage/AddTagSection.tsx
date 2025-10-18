@@ -20,7 +20,7 @@ function AddTagBtn({id,active,handleAddTagBtnClicked}:AddTagBtnProps){
         }
 
         try{
-            const res=await fetch("http://localhost:8080/addtag",{
+            const res=await fetch("/api/addtag",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,

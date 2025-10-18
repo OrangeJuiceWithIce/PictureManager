@@ -26,7 +26,7 @@ export const WorldTagProvider=({children}:{children:React.ReactNode})=>{
         setLoading(true)
         const pictureIds=pictures.map((p)=>(p.id))
         try{
-            const res=await fetch("http://localhost:8080/gettag",{
+            const res=await fetch("/api/gettag",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,

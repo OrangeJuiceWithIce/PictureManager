@@ -30,7 +30,7 @@ function UploadSection(){
         }
 
         try{
-            const res=await fetch("http://localhost:8080/uploadpict",{
+            const res=await fetch("api/uploadpict",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,

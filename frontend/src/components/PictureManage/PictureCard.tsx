@@ -37,7 +37,7 @@ function PictureCard({id,ifPublic,path,tags,active,onDelete,handleAddTagBtnClick
         <div className="picture-card" key={id}>
             <div className="picture-card-image-wrapper">
                 <img 
-                    src={`http://localhost:8080/${path}`}
+                    src={`/${path}`}
                     alt="pic"
                     onClick={()=>handleClick(id)}
                     className="picture-card-image"

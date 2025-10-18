@@ -19,7 +19,7 @@ function PictureDetail(){
     useEffect(()=>{
         const fetchPicture=async()=>{
             try{
-                const res=await fetch(`http://localhost:8080/getpictbyid/${id}`,{
+                const res=await fetch(`/api/getpictbyid/${id}`,{
                     method:"GET",
                     headers:{
                         "Authorization":`Bearer ${token}`,
@@ -45,7 +45,7 @@ function PictureDetail(){
         height:number,
     }|null})=>{
         try{
-            const res = await fetch("http://localhost:8080/editpict",{
+            const res = await fetch("/api/editpict",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,
@@ -62,7 +62,7 @@ function PictureDetail(){
             if(data.success){
                 alert("编辑保存成功")
                 setEditing(false)
-                const refetch = await fetch(`http://localhost:8080/getpictbyid/${data.newPictureId}`,{
+                const refetch = await fetch(`/api/getpictbyid/${data.newPictureId}`,{
                     method:"GET",
                     headers:{"Authorization":`Bearer ${token}`}
                 })
@@ -112,7 +112,7 @@ function PictureDetail(){
                     </div>
                     <div className="picture-detail-image-wrapper">
                         <img
-                            src={`http://localhost:8080/${picture.path}`}
+                            src={`/${picture.path}`}
                             alt={`图片${picture.id}`}
                             className="picture-detail-image"
                         />
@@ -121,7 +121,7 @@ function PictureDetail(){
             )}
             {editing&&(
                 <ImageEditor
-                    imgUrl={`http://localhost:8080/${picture.path}`}
+                    imgUrl={`/${picture.path}`}
                     onCancel={()=>setEditing(false)}
                     onSave={handleSaveEdit}
                 />

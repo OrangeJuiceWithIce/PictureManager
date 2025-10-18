@@ -17,7 +17,7 @@ var DB *gorm.DB
 func InitDB() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("[InitDB]failed to load .env:%v", err)
+		log.Printf("[InitDB]failed to load .env:%v", err)
 	}
 
 	user := os.Getenv("DB_USER")

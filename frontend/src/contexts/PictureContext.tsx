@@ -33,7 +33,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
                 body.selectedTags=searchParams.selectedTags
             }
 
-            const res=await fetch("http://localhost:8080/searchpict",{
+            const res=await fetch("/api/searchpict",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,
@@ -60,7 +60,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
         if(!confirmed)return
 
         try{
-            const res=await fetch(`http://localhost:8080/deletepict/${id}`,{
+            const res=await fetch(`/api/deletepict/${id}`,{
                 method:"DELETE",
                 headers:{
                     "Authorization":`Bearer ${token}`,
@@ -80,7 +80,7 @@ export const PictureProvider=({children}:{children:React.ReactNode})=>{
 
     const handleSetPublic=async(pictureId:number,ifPublic:boolean)=>{
         try{
-            const res = await fetch("http://localhost:8080/setpictpub",{
+            const res = await fetch("/api/setpictpub",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,

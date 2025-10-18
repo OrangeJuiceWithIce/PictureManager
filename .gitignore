@@ -51,3 +51,6 @@ $RECYCLE.BIN/
 # Temporary files
 *.tmp
 *.temp
+
+# Docker
+data/

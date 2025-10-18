@@ -1,0 +1,8 @@
+uploads
+thumbnail
+.git
+.gitignore
+README.md
+*.md
+.env
+

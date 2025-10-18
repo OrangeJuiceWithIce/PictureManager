@@ -31,7 +31,7 @@ function TagGallery({pictureId,tags}:TagGalleryProps){
     //删除tag
     const handleDeleteTag=async(pictureId:number,tagId:number)=>{
         try{
-            const res=await fetch("http://localhost:8080/deletetag",{
+            const res=await fetch("/api/deletetag",{
                 method:"POST",
                 headers:{
                     "Authorization":`Bearer ${token}`,

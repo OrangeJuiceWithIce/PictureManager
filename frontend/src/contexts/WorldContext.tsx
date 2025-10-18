@@ -34,7 +34,7 @@ export const WorldProvider = ({ children }: { children: React.ReactNode }) => {
         const finalParams = { ...searchParams, ...params };
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:8080/getpublicpict", {
+            const res = await fetch("/api/getpublicpict", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
