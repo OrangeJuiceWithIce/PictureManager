@@ -318,7 +318,8 @@ func EditPicture(c *gin.Context) {
 		edited = imaging.Grayscale(edited)
 	}
 
-	uniqueName := fmt.Sprintf("%s_edited.jpg", uuid.New())
+	ext := filepath.Ext(pic.PicturePath)
+	uniqueName := fmt.Sprintf("%s_edited.%s", uuid.New(), ext)
 	savePath := filepath.Join("uploads", uniqueName)
 	thumbPath := filepath.Join("thumbnail", uniqueName)
 
