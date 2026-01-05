@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import type { Picture } from "../../types/picture";
+import { useAuth } from "../contexts/AuthContext";
+import type { Picture } from "../types/picture";
 import "./PictureDetail.css"
-import ImageEditor from "./ImageEditor";
+import ImageEditor from "../components/PictureManage/ImageEditor";
 
 function PictureDetail(){
     const {id}=useParams()

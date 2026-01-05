@@ -4,12 +4,14 @@ import (
 	"picturemanager/db"
 	"picturemanager/handlers"
 	"picturemanager/middlewares"
+	"picturemanager/redis"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	db.InitDB()
+	redis.InitRedis()
 
 	r := gin.Default()
 

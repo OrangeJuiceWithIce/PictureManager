@@ -13,6 +13,16 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - picture-manager-network
+  
+  # Redis
+  redis:
+    image: redis:7
+    container_name: picture-manager-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - picture-manager-network
 
   # 后端服务
   backend:

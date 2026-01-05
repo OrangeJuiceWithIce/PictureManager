@@ -9,7 +9,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './utils/ProtectedRoute'
 import AuthRoute from './utils/AuthRoute'
 import MyPicturePage from './pages/PictureManagePage/MyPicture'
-import PictureDetail from './components/PictureManage/PictureDetail'
+import PictureDetail from './pages/PictureDetail'
 import World from './pages/PictureManagePage/World'
 
 function App() {
