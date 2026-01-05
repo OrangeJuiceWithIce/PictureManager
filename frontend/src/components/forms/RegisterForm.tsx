@@ -13,12 +13,12 @@ function RegisterForm(){
     const handleRegister=async(e:React.FormEvent)=>{
         e.preventDefault()
 
-        if(username.length>20||username,length<6){
+        if(username.length>20||username.length<6){
             alert("用户名长度必须为6-20位")
             return
         }
 
-        if(password.length>20||password,length<6){
+        if(password.length>20||password.length<6){
             alert("密码长度必须为6-20位")
             return
         }
