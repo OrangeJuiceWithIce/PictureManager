@@ -7,8 +7,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: liuhan73
       MYSQL_DATABASE: picturemanager
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -19,8 +17,6 @@ services:
     image: redis:7
     container_name: picture-manager-redis
     restart: always
-    ports:
-      - "6379:6379"
     networks:
       - picture-manager-network
 
